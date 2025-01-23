@@ -50,14 +50,22 @@ class AudioPlayerTileState extends State<AudioPlayerTile> {
     final bool isActive=widget.player!=null;
 
     return Container(
-      decoration: BoxDecoration(color: theme.primaryColor.withValues(red: 200,alpha: 0.1),borderRadius: BorderRadius.all(Radius.circular(12.0))),
+      decoration: BoxDecoration(
+          boxShadow: [
+      BoxShadow(
+      color: Colors.grey.withValues(alpha: 0.3),
+      offset: Offset(0, 2), // changes the shadow's position
+    ),
+    ],
+          color:widget.player==null ? Colors.white : Colors.greenAccent.withValues(green: 200,alpha: 0.1)
+          ,borderRadius: BorderRadius.all(Radius.circular(8.0))),
       child:Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-            title: Text(widget.title),
+            title: Text(widget.title,maxLines: 2,overflow: TextOverflow.ellipsis),
             leading: Icon(Icons.music_note),
             trailing: widget.player?.playing!=true ? SizedBox(width: 40,child: StreamBuilder<PlayerState>(
                 stream: widget.player?.playerStateStream,
@@ -84,16 +92,24 @@ class AudioPlayerTileState extends State<AudioPlayerTile> {
                       if(widget.volumeController!=null) IconButton(
                         icon: const Icon(Icons.volume_up),
                         onPressed: isActive ? () {
-                          showSliderDialog(
-                            context: context,
-                            title: "Adjust volume",
-                            divisions: 10,
-                            min: 0.0,
-                            max: 1.0,
-                            value: widget.player!.volume,
-                            stream: widget.player!.volumeStream,
-                            onChanged:widget.volumeController!.setVolume,
-                          );
+                          showDialog(context: context, builder: (context) {
+                            return SimpleDialog(
+                              title: Text("Adjust volume",textAlign: TextAlign.center,style: TextStyle(fontFamily: "oxanium",fontWeight: FontWeight.w600),),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 0,vertical: 24),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              children: [StreamBuilder(stream:widget.player!.volumeStream, builder: (context, snapshot) {
+                                return Slider(
+                                  thumbColor: Colors.green,
+                                  activeColor: Colors.green,
+                                  divisions: 20,
+                                  min: 0.0,
+                                  max: 1.0,
+                                  value: snapshot.data ?? 0,
+                                  onChanged:widget.volumeController!.setVolume,
+                                );
+                              },)]);
+                          });
                         } : null,
                       ),
 
@@ -142,16 +158,25 @@ class AudioPlayerTileState extends State<AudioPlayerTile> {
                         builder: (context, snapshot) => IconButton(
                           icon: Text("${snapshot.data?.toStringAsFixed(1)}x",style: TextStyle(fontWeight: FontWeight.bold,color: isActive ? Colors.black : Colors.grey),),
                           onPressed: isActive ? () {
-                            showSliderDialog(
-                              context: context,
-                              title: "Adjust speed",
-                              divisions: 10,
-                              min: 0.5,
-                              max: 1.5,
-                              value: widget.player!.speed,
-                              stream: widget.player!.speedStream,
-                              onChanged: widget.player!.setSpeed,
-                            );
+
+                            showDialog(context: context, builder: (context) {
+                              return SimpleDialog(
+                                  title: Text("Adjust speed",textAlign: TextAlign.center,style: TextStyle(fontFamily: "oxanium",fontWeight: FontWeight.w600),),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 0,vertical: 24),
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  children: [StreamBuilder(stream:widget.player!.speedStream, builder: (context, snapshot) {
+                                    return Slider(
+                                      thumbColor: Colors.green,
+                                      activeColor: Colors.green,
+                                      divisions: 20,
+                                      min: 0.5,
+                                      max: 2,
+                                      value: widget.player!.speed,
+                                      onChanged: widget.player!.setSpeed,
+                                    );
+                                  },)]);
+                            },);
                           }:null,
                         ),
                       ),

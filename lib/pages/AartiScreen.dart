@@ -43,6 +43,11 @@ class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
 
     // Try to load audio from a source and catch any errors.
     try {
+      if(AppPlayer().isActiveSource(audioUrl: audioUrl)){
+        player.play();
+        return;
+      }
+
       await playerInstance.resetPlayList();
       await playerInstance.addToQueue(audioUrl: audioUrl);
     } on PlayerException catch (e) {
@@ -87,6 +92,7 @@ class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text("Aarti Sangrah",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'oxanium'),),
           backgroundColor: Theme.of(context).primaryColor,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
