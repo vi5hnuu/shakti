@@ -22,4 +22,5 @@ class HttpStates{
 
   // Aarti
   static const String ALL_AARTI="ALL_AARTI";
+  static const String ALL_REEL="ALL_REELS";
 }

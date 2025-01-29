@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -13,6 +14,7 @@ import 'package:shakti/models/requestPayload/ResetPassword.dart';
 import 'package:shakti/models/requestPayload/UpdatePassword.dart';
 import 'package:shakti/services/AuthApi.dart';
 import 'package:shakti/singletons/SecureStorage.dart';
+import 'package:shakti/streams/auth-global-dispatcher.dart';
 import '../../models/HttpState.dart';
 import '../../models/requestPayload/LoginManual.dart';
 import '../../singletons/DioSingleton.dart';
@@ -23,7 +25,13 @@ part 'Auth_event.dart';
 part 'Auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  StreamSubscription<GlobalEvent>? subscription;
+
   AuthBloc({required AuthApi authApi}) : super(AuthState.initial()) {
+    subscription=(globalEventDispatcher.stream as Stream<GlobalEvent>).listen((event) {
+      if(event is LogOutInitEvent) add(const LogoutEvent());
+    });
+
     on<TryAuthenticatingEvent>((event, emit) async {
       emit(AuthState.initial().copyWith(httpStates:  state.httpStates.clone()..put(HttpStates.TRY_AUTH,const HttpState.loading())));
       try {
@@ -114,6 +122,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final res = await authApi.logout(cancelToken: event.cancelToken);
         _clearCookies();
         emit(AuthState.initial());
+        globalEventDispatcher.dispatch(event: LogOutCompleteEvent());
       } on DioException catch (e) {
         emit(state.copyWith(httpStates: state.httpStates.clone()..put(HttpStates.LOG_OUT, HttpState.error(error: e.response?.data?['error'] ?? e.response?.data?['message'] ?? e.message))));
       } catch (e) {
@@ -198,6 +207,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(httpStates: state.httpStates.clone()..put(HttpStates.REVERIFY, HttpState.error(error: e.toString()))));
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    subscription?.cancel();
+    return super.close();
   }
 
   Future<Cookie?> _getCookie() async {

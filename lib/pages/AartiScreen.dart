@@ -1,7 +1,13 @@
+import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shakti/routes.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/singletons/PlayerSingleton.dart';
 import 'package:shakti/state/aarti/Aarti_bloc.dart';
+import 'package:shakti/state/auth/Auth_bloc.dart';
 import 'package:shakti/widgets/AudioPlayerTile.dart';
 import 'package:shakti/widgets/RetryAgain.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 import '../state/httpStates.dart';
+import '../widgets/AppDrawer.dart';
 
 class AartiScreen extends StatefulWidget {
   const AartiScreen({super.key});
@@ -21,12 +28,13 @@ class AartiScreen extends StatefulWidget {
 }
 
 class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
+  late final router=GoRouter.of(context);
   late final aartiBloc=BlocProvider.of<AartiBloc>(context);
   final ScrollController _scrollController = ScrollController();
   CancelToken cancelToken = CancelToken();
   int pageNo = 1;
   final VolumeController volumeController=VolumeController.instance;
-
+  late final md=MediaQuery.of(context);
   //
   final playerInstance = AppPlayer();
   bool isActive=false;
@@ -95,7 +103,13 @@ class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
           title: Text("Aarti Sangrah",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'oxanium'),),
           backgroundColor: Theme.of(context).primaryColor,
           iconTheme: const IconThemeData(color: Colors.white),
+          actions: [
+            IconButton(onPressed: () => router.pushNamed(AppRoutes.shaktiReels.name), icon: SvgPicture.asset("assets/icons/reel.svg"))
+          ],
         ),
+        drawer: AppDrawer(),
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 46,
         body: BlocBuilder<AartiBloc, AartiState>(
           buildWhen: (previous, current) => previous != current,
           builder: (context, state) {

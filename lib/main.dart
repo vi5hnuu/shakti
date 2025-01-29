@@ -1,17 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shakti/pages/AartiScreen.dart';
-import 'package:shakti/pages/LoginScreen.dart';
+import 'package:shakti/pages/auth/LoginScreen.dart';
 import 'package:shakti/pages/SettingsScreen.dart';
+import 'package:shakti/pages/ShaktiReelsScreen.dart';
 import 'package:shakti/pages/SplashScreen.dart';
 import 'package:shakti/routes.dart';
 import 'package:shakti/services/AartiApi.dart';
 import 'package:shakti/services/AuthApi.dart';
+import 'package:shakti/services/ShaktiReelApi.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/state/aarti/Aarti_bloc.dart';
 import 'package:shakti/state/auth/Auth_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shakti/state/shaktiReels/ShaktiReel_bloc.dart';
+import 'package:shakti/streams/auth-global-dispatcher.dart';
 
 final parentNavKey=GlobalKey<NavigatorState>();
 
@@ -32,9 +38,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  static final List<String> _whiteListedUrls=[AppRoutes.splashRoute.fullPath];
+  StreamSubscription<GlobalEvent>? globalEventSubscription;
+
   final router=GoRouter(
       debugLogDiagnostics: true,
       initialLocation: AppRoutes.splashRoute.path,
+      redirect: (context, state) {
+        if(_whiteListedUrls.contains(state.fullPath)) return null;
+        final userInfo=BlocProvider.of<AuthBloc>(context).state.userInfo;
+        if(userInfo==null) return AppRoutes.login.path;
+        return null;
+      },
       routes: [
         GoRoute(
         name: AppRoutes.splashRoute.name,
@@ -72,6 +87,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
           ),
         ),
+        GoRoute(
+          name: AppRoutes.shaktiReels.name,
+          path: AppRoutes.shaktiReels.path,
+          pageBuilder: (context, state) => CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: const ShaktiReelsScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+          ),
+        ),
         // GoRoute(
         //   name: AppRoutes.player.name,
         //   path: AppRoutes.player.path,
@@ -86,6 +110,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);//lifecycycle events
+    globalEventSubscription=(globalEventDispatcher.stream as Stream<GlobalEvent>).listen((event) {
+      if ((event is LogOutCompleteEvent)) {
+        router.goNamed(AppRoutes.login.name);
+      }
+    });
     super.initState();
   }
 
@@ -94,7 +123,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(lazy: false, create: (ctx) => AuthBloc(authApi: AuthApi())),
-        BlocProvider<AartiBloc>(lazy: false, create: (ctx) => AartiBloc(aartiApi: AartiApi()))
+        BlocProvider<AartiBloc>(lazy: false, create: (ctx) => AartiBloc(aartiApi: AartiApi())),
+        BlocProvider<ShaktiReelBloc>(lazy: false, create: (ctx) => ShaktiReelBloc(shaktiReelApi: ShaktiReelApi()))
       ],
       child:MaterialApp.router(
         key: parentNavKey,
@@ -110,8 +140,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
     );
   }
+
   @override
   void dispose() {
+    globalEventSubscription?.cancel();
     super.dispose();
   }
 }

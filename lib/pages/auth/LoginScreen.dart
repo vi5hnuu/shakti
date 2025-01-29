@@ -12,8 +12,8 @@ import 'package:shakti/singletons/LoggerSingleton.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/singletons/SecureStorage.dart';
 
-import '../state/auth/Auth_bloc.dart';
-import '../state/httpStates.dart';
+import '../../state/auth/Auth_bloc.dart';
+import '../../state/httpStates.dart';
 
 
 const List<String> scopes = <String>[

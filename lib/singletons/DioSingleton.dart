@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:shakti/extensions/map-entensions.dart';
 import 'package:shakti/singletons/SecureStorage.dart';
+import 'package:shakti/streams/auth-global-dispatcher.dart';
 import '../constants/Constants.dart';
 import 'LoggerSingleton.dart';
 
@@ -35,6 +36,7 @@ class DioSingleton {
     }, onError: (DioException e, handler) {
       LoggerSingleton().logger.i('ERROR [${e.response?.statusCode}] => PATH: ${e.requestOptions.path}');
       LoggerSingleton().logger.e('ERROR [${e.response}');
+      if(e.response?.statusCode==401) globalEventDispatcher.dispatch(event: LogOutInitEvent());
       return handler.next(e);
     }));
   }
