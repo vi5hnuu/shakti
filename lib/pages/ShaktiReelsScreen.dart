@@ -1,10 +1,6 @@
-import 'dart:math';
-
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:native_video_player/native_video_player.dart';
 import 'package:shakti/models/Reel.dart';
-import 'package:shakti/pages/common.dart';
 import 'package:shakti/state/httpStates.dart';
 import 'package:shakti/state/shaktiReels/ShaktiReel_bloc.dart';
 import 'package:dio/dio.dart';
@@ -31,6 +27,7 @@ class _ShaktiReelsScreenState extends State<ShaktiReelsScreen> {
   int currentReelNo = 0;
   ValueNotifier<double> progressNotifier=ValueNotifier(0.0);
   bool isInitialized=false;
+  final playerKey=ValueKey('Shakti Reel Player');
 
   @override
   initState() {
@@ -67,7 +64,7 @@ class _ShaktiReelsScreenState extends State<ShaktiReelsScreen> {
                         fit: StackFit.expand,
                         alignment: Alignment.center,
                         children: [
-                          VideoPlayerView(reel: reels[currentReelNo]),
+                          VideoPlayerView(key: playerKey,reel: reels[currentReelNo]),
                           Positioned(bottom: 25,left: 15,child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,35 +140,19 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   }
 
   Future<void> _initController(NativeVideoPlayerController controller) async {
-    setState(() {
-      _controller = controller;
-    });
-
-    _controller?. //
-    onPlaybackStatusChanged
-        .addListener(_onPlaybackStatusChanged);
-    _controller?. //
-    onPlaybackPositionChanged
-        .addListener(_onPlaybackPositionChanged);
-    _controller?. //
-    onPlaybackSpeedChanged
-        .addListener(_onPlaybackSpeedChanged);
-    _controller?. //
-    onVolumeChanged
-        .addListener(_onPlaybackVolumeChanged);
-    _controller?. //
-    onPlaybackReady
-        .addListener(_onPlaybackReady);
-    _controller?. //
-    onPlaybackEnded
-        .addListener(_onPlaybackEnded);
-
+    setState(() => _controller = controller);
+    _controller?.onPlaybackStatusChanged.addListener(_onPlaybackStatusChanged);
+    _controller?.onPlaybackPositionChanged.addListener(_onPlaybackPositionChanged);
+    _controller?.onPlaybackSpeedChanged.addListener(_onPlaybackSpeedChanged);
+    _controller?.onVolumeChanged.addListener(_onPlaybackVolumeChanged);
+    _controller?.onPlaybackReady.addListener(_onPlaybackReady);
+    _controller?.onPlaybackEnded.addListener(_onPlaybackEnded);
     await _loadVideoSource();
   }
 
   Future<void> _loadVideoSource() async {
     final videoSource = await _createVideoSource();
-    await _controller?.loadVideoSource(videoSource);
+    await _controller!.loadVideoSource(videoSource);
   }
 
   Future<VideoSource> _createVideoSource() async {
