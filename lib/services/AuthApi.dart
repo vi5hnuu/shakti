@@ -124,7 +124,7 @@ class AuthApi {
   }
 
   Future<ApiResponse<void>> resetPassword({required ResetPassword resetPassword,CancelToken? cancelToken}) async {
-    var res = await DioSingleton().dio.post(_resetPassword,data:resetPassword,cancelToken:cancelToken);
+    var res = await DioSingleton().dio.post(_resetPassword,data:resetPassword.toJson(),cancelToken:cancelToken);
     return ApiResponse<void>(success: res.data['success'],message: res.data['message']);
   }
 }

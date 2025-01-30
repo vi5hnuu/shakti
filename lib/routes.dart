@@ -17,7 +17,7 @@ class AppRoutes{
   static AppRoute login=AppRoute(name: 'login', path: 'login',fullPath: '/auth/login');
   static AppRoute profile=AppRoute(name: 'profile', path: 'profile',fullPath: '/auth/profile');
   static AppRoute updatePassword=AppRoute(name: 'update password', path: 'update-password',fullPath: '/auth/update-password');
-  static AppRoute resetPasswordInit=AppRoute(name: 'forgot password', path: 'forgot-password',fullPath: '/auth/forgot-password');
-  static AppRoute resetPasswordComplete=AppRoute(name: 'forgot password', path: 'forgot-password',fullPath: '/auth/forgot-password');
+  static AppRoute resetPasswordInit=AppRoute(name: 'forgot password init', path: 'forgot-password-init',fullPath: '/auth/forgot-password-init');
+  static AppRoute resetPasswordComplete=AppRoute(name: 'forgot password complete', path: 'forgot-password-complete',fullPath: '/auth/forgot-password-complete');
   static AppRoute registerUser=AppRoute(name: 'register', path: 'register',fullPath: '/auth/register');
 }

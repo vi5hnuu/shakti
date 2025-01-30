@@ -88,32 +88,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 8),
                     TextFormField(controller: passwordC,maxLines: 1,obscureText: true,obscuringCharacter: "*",decoration: InputDecoration(labelText: "Password",border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)))),
                     const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(onPressed: () {
-                        authBloc.add(LoginEvent(usernameEmail: usernameEmailC.text, password: passwordC.text));
-                      }, child: Text("Log In")),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(onPressed: _loginViaGoogle, child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center
-                        ,children: [
-                        Icon(FontAwesomeIcons.google),
-                        const SizedBox(width: 12,),
-                        Text("Sign In")
-                      ],)),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(onPressed: () => router.pushNamed(AppRoutes.resetPasswordInit.name), child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center
-                        ,children: [
-                        Icon(FontAwesomeIcons.google),
-                        const SizedBox(width: 12,),
-                        Text("Forgot Password")
-                      ],)),
-                    )
+                    CustomElevatedButton(onPressed: () => authBloc.add(LoginEvent(usernameEmail: usernameEmailC.text, password: passwordC.text)),
+                        child:  Text("Log In",style: TextStyle(color: Colors.white))),
+                    CustomElevatedButton(onPressed: _loginViaGoogle, child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.center
+                      ,children: [
+                      Icon(FontAwesomeIcons.google,color: Colors.white,),
+                      const SizedBox(width: 12,),
+                      Text("Sign In",style: TextStyle(color: Colors.white))
+                    ],)),
+                    CustomElevatedButton(onPressed: () => router.pushNamed(AppRoutes.resetPasswordInit.name),
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.center
+                          ,children: [
+                          Icon(FontAwesomeIcons.key,color: Colors.white),
+                          const SizedBox(width: 12,),
+                          Text("Forgot Password",style: TextStyle(color: Colors.white),)
+                        ],))
                   ],
                 );
               },

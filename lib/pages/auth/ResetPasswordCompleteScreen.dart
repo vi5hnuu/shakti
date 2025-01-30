@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:shakti/routes.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/state/HttpStates.dart';
@@ -13,7 +14,8 @@ import '../../widgets/CustomInputField.dart';
 import '../../widgets/OtpField.dart';
 
 class ResetPasswordCompleteScreen extends StatefulWidget {
-  const ResetPasswordCompleteScreen({super.key});
+  final String usernameEmail;
+  const ResetPasswordCompleteScreen({required this.usernameEmail,super.key});
 
   @override
   State<ResetPasswordCompleteScreen> createState() => _ResetPasswordCompleteScreenState();
@@ -42,7 +44,7 @@ class _ResetPasswordCompleteScreenState extends State<ResetPasswordCompleteScree
           authBlock.add(ExpireHttpState(forr: HttpStates.RESET_PASSWORD));
           if (state.isSuccess(forr: HttpStates.RESET_PASSWORD)) {
             NotificationService.showSnackbar(text:"password reset successfully",color: Colors.green);
-            context.goNamed(AppRoutes.login.name);
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) => context.goNamed(AppRoutes.login.name));
             return;
           }else if(state.isError(forr: HttpStates.RESET_PASSWORD)){
             NotificationService.showSnackbar(text:state.getError(forr: HttpStates.RESET_PASSWORD)!,color: Colors.red);
@@ -59,55 +61,66 @@ class _ResetPasswordCompleteScreenState extends State<ResetPasswordCompleteScree
             backgroundColor: Theme.of(context).primaryColor,
             iconTheme: const IconThemeData(color: Colors.white),
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(18.5),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    OtpField(otpcontrollers: _otpcontrollers, focusNodes: _focusNodes),
-                    const SizedBox(height: 7),
-                    CustomInputField(
-                        controller: newPasswordCntrl,
-                        labelText: "New Password",
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter New Password';
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    CustomInputField(
-                        controller: confirmPasswordCntrl,
-                        labelText: "Confirm Password",
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Confirm Password';
-                          }
-                          return null;
-                        }),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    CustomElevatedButton(
-                      isLoading: state.isLoading(forr: HttpStates.RESET_PASSWORD),
-                      onPressed: () {
-                        if (formKey.currentState?.validate() == false) {
-                          return;
-                        }
-                        authBlock.add(ResetPasswordEvent(usernameEmail: state.userInfo!.email,otp: _otpcontrollers.map((c) => c.text.trim()).where((num) => num.isNotEmpty).join(''), password: newPasswordCntrl.value.text, confirmPassword: confirmPasswordCntrl.value.text, cancelToken: cancelToken));
-                      },
-                      child: const Text(
-                        'Update Password',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+          body: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              if(!mounted) return;
+              if(state.isLoading(forr: HttpStates.RESET_PASSWORD)){
+                NotificationService.showSnackbar(text: "Please wait, we are processing your request",color: Colors.red);
+                return;
+              }
+              if(context.canPop()) context.pop();
+            },
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(18.5),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      OtpField(otpcontrollers: _otpcontrollers, focusNodes: _focusNodes),
+                      const SizedBox(height: 7),
+                      CustomInputField(
+                          controller: newPasswordCntrl,
+                          labelText: "New Password",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter New Password';
+                            }
+                            return null;
+                          }),
+                      const SizedBox(
+                        height: 7,
                       ),
-                    ),
-                  ],
+                      CustomInputField(
+                          controller: confirmPasswordCntrl,
+                          labelText: "Confirm Password",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Confirm Password';
+                            }
+                            return null;
+                          }),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      CustomElevatedButton(
+                        isLoading: state.isLoading(forr: HttpStates.RESET_PASSWORD),
+                        onPressed: () {
+                          if (formKey.currentState?.validate() == false) {
+                            return;
+                          }
+                          authBlock.add(ResetPasswordEvent(usernameEmail: widget.usernameEmail,otp: _otpcontrollers.map((c) => c.text.trim()).where((num) => num.isNotEmpty).join(''), password: newPasswordCntrl.value.text.trim(), confirmPassword: confirmPasswordCntrl.value.text.trim(), cancelToken: cancelToken));
+                        },
+                        child: const Text(
+                          'Update Password',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

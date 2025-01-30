@@ -119,11 +119,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             GoRoute(
               name: AppRoutes.resetPasswordComplete.name,
               path: AppRoutes.resetPasswordComplete.path,
-              pageBuilder: (context, state) => CustomTransitionPage<void>(
-                key: state.pageKey,
-                child: const ResetPasswordCompleteScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
-              ),
+              pageBuilder: (context, state){
+                final usernameEmail=((state.extra ?? {}) as Map?)?['usernameEmail']!;
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: ResetPasswordCompleteScreen(usernameEmail: usernameEmail),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+                );
+              },
             ),
             GoRoute(
               name: AppRoutes.registerUser.name,
@@ -201,6 +204,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         theme: ThemeData(
           colorSchemeSeed: Colors.red,
           useMaterial3: true,
+          appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
           fontFamily:'monospace',
         ),
         routerConfig: router,

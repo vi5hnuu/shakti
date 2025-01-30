@@ -29,30 +29,31 @@ class _ResetPasswordInitScreenState extends State<ResetPasswordInitScreen> {
     return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) => isStateChanged(previous,current),
       listener: (ctx, state) {
-        authBloc.add(ExpireHttpState(forr: HttpStates.FORGOT_PASSWORD));
         if(state.isExpired(forr: HttpStates.FORGOT_PASSWORD)) return;
+        authBloc.add(ExpireHttpState(forr: HttpStates.FORGOT_PASSWORD));
         if (state.isError(forr: HttpStates.FORGOT_PASSWORD)) {
           NotificationService.showSnackbar(text: state.getError(forr: HttpStates.FORGOT_PASSWORD)!, color: Colors.red);
         }else if(state.isSuccess(forr: HttpStates.FORGOT_PASSWORD)){
           NotificationService.showSnackbar(text: state.httpStates[HttpStates.FORGOT_PASSWORD]?.value ?? 'Otp sent successfully', color: Colors.green);
-          context.replaceNamed(AppRoutes.resetPasswordComplete.name);
+          context.replaceNamed(AppRoutes.resetPasswordComplete.name,extra: {'usernameEmail':usernameEmailController.text.trim()});
         }
       },
       buildWhen: (previous, current) => isStateChanged(previous,current),
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Forgot Password', style: TextStyle(color: Colors.white, fontFamily: "oxanium", fontSize: 32, fontWeight: FontWeight.bold)),
+            title: const Text('Forgot Password', style: TextStyle(color: Colors.white, fontFamily: "oxanium", fontSize: 24, fontWeight: FontWeight.bold)),
             backgroundColor: Theme.of(context).primaryColor,
             elevation: 10,
           ),
+
           body: PopScope(canPop: false,onPopInvokedWithResult: (didPop, result) {
             if(!mounted) return;
             if(state.isLoading(forr: HttpStates.FORGOT_PASSWORD)){
               NotificationService.showSnackbar(text: "Please wait, we are processing your request",color: Colors.red);
               return;
             }
-            context.pop();
+            if(context.canPop()) context.pop();
           },child: Padding(
             padding: const EdgeInsets.all(15),
             child: Center(
@@ -63,6 +64,7 @@ class _ResetPasswordInitScreenState extends State<ResetPasswordInitScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     CustomInputField(
+                        enabled: !state.isLoading(forr: HttpStates.FORGOT_PASSWORD),
                         controller: usernameEmailController,
                         labelText: 'Username/Email',
                         hintText: 'xyz/xyz@gmail.com',
@@ -79,9 +81,9 @@ class _ResetPasswordInitScreenState extends State<ResetPasswordInitScreen> {
                           if (!formKey.currentState!.validate()) return;
                           authBloc.add(ForgotPasswordEvent(usernameEmail: usernameEmailController.text,cancelToken: cancelToken));
                         },
-                        child: const Text('Forgot-password', style: TextStyle(color: Colors.white, fontSize: 18),)),
+                        child: Text('Forgot-password', style: TextStyle(color: state.isLoading(forr: HttpStates.FORGOT_PASSWORD) ? Colors.grey : Colors.white, fontSize: 18),)),
                     const SizedBox(height: 12),
-                    CustomTextButton(isLoading: state.isLoading(forr: HttpStates.FORGOT_PASSWORD),onPressed: () => context.goNamed(AppRoutes.login.name), child: const Text('Sign-in instead'))
+                    CustomTextButton(isDisabled: state.isLoading(forr: HttpStates.FORGOT_PASSWORD),onPressed: () => context.goNamed(AppRoutes.login.name), child: const Text('Sign-in instead'))
                   ],
                 ),
               ),
