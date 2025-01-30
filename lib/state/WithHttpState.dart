@@ -47,6 +47,10 @@ mixin WithHttpState{
     return httpStates.containsKey(forr) && httpStates[forr]!.error!=null;
   }
 
+  bool isExpired({required final String forr}){
+    return httpStates.containsKey(forr) && httpStates[forr]!.isExpired;
+  }
+
   bool isSuccess({required final String forr}){
     return httpStates.containsKey(forr) && httpStates[forr]!.done==true;
   }

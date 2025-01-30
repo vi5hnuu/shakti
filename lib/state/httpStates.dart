@@ -9,7 +9,6 @@ class HttpStates{
   static const String LOG_OUT="LOG_OUT";
   static const String FORGOT_PASSWORD="FORGOT_PASSWORD";
   static const String RESET_PASSWORD="RESET_PASSWORD";
-  static const String UPDATE_PROFILE_META="UPDATE_PROFILE_META";
   static const String UPDATE_PASSWORD_INIT="UPDATE_PASSWORD_INIT";
   static const String UPDATE_PASSWORD_COMPLETE="UPDATE_PASSWORD_COMPLETE";
   static const String DELETE_ME="DELETE_ME";

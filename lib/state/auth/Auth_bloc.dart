@@ -117,9 +117,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<LogoutEvent>((event, emit) async {
+      if(state.isError(forr: HttpStates.LOG_OUT)) {
+        emit(AuthState.initial());
+        _clearCookies();
+        globalEventDispatcher.dispatch(event: LogOutCompleteEvent());
+        return;
+      }
       emit(state.copyWith(httpStates: state.httpStates.clone()..put(HttpStates.LOG_OUT,const HttpState.loading())));
       try {
-        final res = await authApi.logout(cancelToken: event.cancelToken);
+        await authApi.logout(cancelToken: event.cancelToken);
         _clearCookies();
         emit(AuthState.initial());
         globalEventDispatcher.dispatch(event: LogOutCompleteEvent());
@@ -207,6 +213,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(httpStates: state.httpStates.clone()..put(HttpStates.REVERIFY, HttpState.error(error: e.toString()))));
       }
     });
+
+    on<ExpireHttpState>((event, emit) async {
+      final httpStates=state.httpStates.clone();
+      final httpState=httpStates[event.forr];
+      if(httpState==null) return emit(state.copyWith());
+      emit(state.copyWith(httpStates: httpStates..put(event.forr,httpState.copyWith(loading: httpState.loading, done: httpState.done, error: httpState.error, value: httpState.value, isExpired: true))));
+    });
   }
 
   @override
@@ -227,5 +240,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   bool _isCookieValid(Cookie? cookie) {
     if (cookie == null) return false;
     return cookie.expires!.isAfter(DateTime.now().add(Duration(minutes: 1)));
+  }
+  Future<void> _block() async{
+    return Future.delayed(Duration(seconds: 3));
   }
 }

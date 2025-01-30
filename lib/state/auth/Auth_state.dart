@@ -23,6 +23,10 @@ class AuthState extends Equatable with WithHttpState {
     );
   }
 
+  get isAuthenticated{
+    return userInfo!=null;
+  }
+
   @override
   List<Object?> get props => [httpStates,userInfo,message];
 }

@@ -205,9 +205,10 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     super.dispose();
   }
 
-  void _onPlaybackReady() {
+  void _onPlaybackReady() async{
     setState(() {});
     if (isAutoplayEnabled) {
+      _controller?.setVolume(await VolumeController.instance.getVolume());
       _controller?.play();
     }
   }

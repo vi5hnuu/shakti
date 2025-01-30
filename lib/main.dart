@@ -6,6 +6,8 @@ import 'package:shakti/pages/auth/LoginScreen.dart';
 import 'package:shakti/pages/SettingsScreen.dart';
 import 'package:shakti/pages/ShaktiReelsScreen.dart';
 import 'package:shakti/pages/SplashScreen.dart';
+import 'package:shakti/pages/auth/UpdatePasswordScreen.dart';
+import 'package:shakti/pages/auth/profileScreen.dart';
 import 'package:shakti/routes.dart';
 import 'package:shakti/services/AartiApi.dart';
 import 'package:shakti/services/AuthApi.dart';
@@ -47,7 +49,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       redirect: (context, state) {
         if(_whiteListedUrls.contains(state.fullPath)) return null;
         final userInfo=BlocProvider.of<AuthBloc>(context).state.userInfo;
-        if(userInfo==null) return AppRoutes.login.path;
+        if(userInfo==null) return AppRoutes.login.fullPath;
         return null;
       },
       routes: [
@@ -61,13 +63,41 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
         ),
         GoRoute(
-          name: AppRoutes.login.name,
-          path: AppRoutes.login.path,
-          pageBuilder: (context, state) => CustomTransitionPage<void>(
-            key: state.pageKey,
-            child: const LoginScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
-          ),
+          name: AppRoutes.auth.name,
+          path: AppRoutes.auth.path,
+          redirect: (context, state) {
+            if(state.fullPath==AppRoutes.auth.fullPath) return AppRoutes.login.fullPath;
+            return null;
+          },
+          routes: [
+            GoRoute(
+              name: AppRoutes.login.name,
+              path: AppRoutes.login.path,
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const LoginScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+              ),
+            ),
+            GoRoute(
+              name: AppRoutes.profile.name,
+              path: AppRoutes.profile.path,
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const ProfileScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+              ),
+            ),
+            GoRoute(
+              name: AppRoutes.updatePassword.name,
+              path: AppRoutes.updatePassword.path,
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const UpdatePasswordScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+              ),
+            )
+          ]
         ),
         GoRoute(
           name: AppRoutes.home.name,

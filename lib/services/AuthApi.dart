@@ -16,7 +16,7 @@ class AuthApi {
   static const String _getUserInfo = "${Constants.baseUrl}/api/v1/users/{userId}"; //Admin : GET
   static const String _getMeInfo = "${Constants.baseUrl}/api/v1/users/me"; //GET
   static const String _deleteUser = "${Constants.baseUrl}/api/v1/users/{userId}"; //DELETE
-  static const String _deleteMe = "${Constants.baseUrl}/api/v1/users/"; //DELETE
+  static const String _deleteMe = "${Constants.baseUrl}/api/v1/users"; //DELETE
   static const String _addRole = "${Constants.baseUrl}/api/v1/users/add-role"; //PATCH
   static const String _updatePasswordInit = "${Constants.baseUrl}/api/v1/users/password/init"; //POST
   static const String _updatePasswordComplete = "${Constants.baseUrl}/api/v1/users/password/complete"; //PATCH
@@ -79,7 +79,7 @@ class AuthApi {
   }
 
   Future<ApiResponse<void>> updatePasswordComplete({required UpdatePassword updatePassword,CancelToken? cancelToken}) async {
-    var res = await DioSingleton().dio.patch(_updatePasswordComplete,data:updatePassword,cancelToken:cancelToken);
+    var res = await DioSingleton().dio.patch(_updatePasswordComplete,data:updatePassword.toJson(),cancelToken:cancelToken);
     return ApiResponse<void>(success: res.data['success'],message: res.data['message']);
   }
 

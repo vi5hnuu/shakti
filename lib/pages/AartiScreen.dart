@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shakti/models/User.dart';
 import 'package:shakti/routes.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/singletons/PlayerSingleton.dart';
@@ -14,6 +15,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shakti/widgets/UserAvatar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_controller/volume_controller.dart';
 
@@ -104,7 +106,10 @@ class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
           backgroundColor: Theme.of(context).primaryColor,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
-            IconButton(onPressed: () => router.pushNamed(AppRoutes.shaktiReels.name), icon: SvgPicture.asset("assets/icons/reel.svg"))
+            IconButton(onPressed: () => router.pushNamed(AppRoutes.shaktiReels.name), icon: SvgPicture.asset("assets/icons/reel.svg")),
+            BlocSelector<AuthBloc,AuthState,User?>(selector: (state) => state.userInfo, builder: (context, state) {
+              return IconButton(onPressed: () => router.pushNamed(AppRoutes.profile.name), icon: UserAvatar(radius: kToolbarHeight/3, imageUrl: state?.profileUrl));
+            },)
           ],
         ),
         drawer: AppDrawer(),

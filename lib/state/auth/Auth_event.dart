@@ -6,6 +6,11 @@ abstract class AuthEvent {
   const AuthEvent({this.cancelToken});
 }
 
+class ExpireHttpState extends AuthEvent{
+  final String forr;
+  const ExpireHttpState({required this.forr});
+}
+
 class TryAuthenticatingEvent extends AuthEvent{
   const TryAuthenticatingEvent({super.cancelToken});
 }

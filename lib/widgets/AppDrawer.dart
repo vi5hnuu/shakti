@@ -4,9 +4,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shakti/models/User.dart';
 import 'package:shakti/routes.dart';
 
 import '../state/auth/Auth_bloc.dart';
+import 'UserAvatar.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({
@@ -40,8 +42,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ClipOval(child: CircleAvatar(radius: md.size.height*0.08,child: userInfo?.profileUrl!=null ? Image.network(userInfo!.profileUrl!,fit: BoxFit.cover,width: double.infinity,
-                      height: double.infinity,errorBuilder: (context, error, stackTrace) => Icon(Icons.error),loadingBuilder: (context, child, loadingProgress) => loadingProgress==null ? child : SpinKitThreeBounce(color: Colors.green,),) : Icon(FontAwesomeIcons.user),),),
+                    UserAvatar(radius: md.size.height*0.08, imageUrl: userInfo?.profileUrl),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
                       child: Text(overflow: TextOverflow.ellipsis,userInfo!=null ? '${userInfo.firstName} ${userInfo.lastName??''}' : '',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: Colors.white),),
@@ -73,3 +74,5 @@ class _AppDrawerState extends State<AppDrawer> {
     authBloc.add(LogoutEvent());
   }
 }
+
+

@@ -1,4 +1,3 @@
-import 'package:shakti/models/enums/UserRole.dart';
 
 class UpdatePassword {
   final String otp;
@@ -7,4 +6,13 @@ class UpdatePassword {
   final String confirmPassword;
 
   const UpdatePassword({required this.otp,required this.oldPassword,required this.newPassword,required this.confirmPassword});
+
+  Map<String,dynamic> toJson() {
+    return {
+      'otp':otp,
+      'oldPassword':oldPassword,
+      'newPassword':newPassword,
+      'confirmPassword':confirmPassword
+    };
+  }
 }
