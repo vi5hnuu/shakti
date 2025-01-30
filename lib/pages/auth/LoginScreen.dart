@@ -11,6 +11,7 @@ import 'package:shakti/singletons/DioSingleton.dart';
 import 'package:shakti/singletons/LoggerSingleton.dart';
 import 'package:shakti/singletons/NotificationService.dart';
 import 'package:shakti/singletons/SecureStorage.dart';
+import 'package:shakti/widgets/CustomElevatedButton.dart';
 
 import '../../state/auth/Auth_bloc.dart';
 import '../../state/httpStates.dart';
@@ -101,6 +102,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         Icon(FontAwesomeIcons.google),
                         const SizedBox(width: 12,),
                         Text("Sign In")
+                      ],)),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(onPressed: () => router.pushNamed(AppRoutes.resetPasswordInit.name), child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center
+                        ,children: [
+                        Icon(FontAwesomeIcons.google),
+                        const SizedBox(width: 12,),
+                        Text("Forgot Password")
                       ],)),
                     )
                   ],
