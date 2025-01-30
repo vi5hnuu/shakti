@@ -39,6 +39,7 @@ class _ResetPasswordCompleteScreenState extends State<ResetPasswordCompleteScree
         listenWhen: (previous, current) => isStateChanged(previous,current),
         listener: (ctx, state) {
           if(state.isExpired(forr: HttpStates.RESET_PASSWORD)) return;
+          authBlock.add(ExpireHttpState(forr: HttpStates.RESET_PASSWORD));
           if (state.isSuccess(forr: HttpStates.RESET_PASSWORD)) {
             NotificationService.showSnackbar(text:"password reset successfully",color: Colors.green);
             context.goNamed(AppRoutes.login.name);

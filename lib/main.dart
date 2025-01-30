@@ -6,9 +6,9 @@ import 'package:shakti/pages/auth/LoginScreen.dart';
 import 'package:shakti/pages/SettingsScreen.dart';
 import 'package:shakti/pages/ShaktiReelsScreen.dart';
 import 'package:shakti/pages/SplashScreen.dart';
+import 'package:shakti/pages/auth/RegisterScreen.dart';
 import 'package:shakti/pages/auth/ResetPasswordCompleteScreen.dart';
 import 'package:shakti/pages/auth/ResetPasswordInitScreen.dart';
-import 'package:shakti/pages/auth/ResetPasswordScreen.dart';
 import 'package:shakti/pages/auth/UpdatePasswordScreen.dart';
 import 'package:shakti/pages/auth/profileScreen.dart';
 import 'package:shakti/routes.dart';
@@ -43,7 +43,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  static final List<String> _whiteListedUrls=[AppRoutes.splashRoute.fullPath,AppRoutes.login.fullPath,AppRoutes.resetPasswordInit.fullPath,AppRoutes.resetPasswordComplete.fullPath];
+  static final List<String> _whiteListedUrls= [
+    AppRoutes.splashRoute.fullPath,
+    AppRoutes.login.fullPath,
+    AppRoutes.resetPasswordInit.fullPath,
+    AppRoutes.resetPasswordComplete.fullPath,
+    AppRoutes.registerUser.fullPath,
+  ];
+
   StreamSubscription<GlobalEvent>? globalEventSubscription;
 
   final router=GoRouter(
@@ -115,6 +122,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               pageBuilder: (context, state) => CustomTransitionPage<void>(
                 key: state.pageKey,
                 child: const ResetPasswordCompleteScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+              ),
+            ),
+            GoRoute(
+              name: AppRoutes.registerUser.name,
+              path: AppRoutes.registerUser.path,
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const RegisterScreen(),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
               ),
             )

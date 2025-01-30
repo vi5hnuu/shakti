@@ -40,8 +40,6 @@ class RegisterEvent extends AuthEvent {
   final String username;
   final String email;
   final String password;
-  final MultipartFile profilePic;
-  final MultipartFile posterPic;
 
   const RegisterEvent(
       {required this.firstName,
@@ -49,8 +47,6 @@ class RegisterEvent extends AuthEvent {
         required this.username,
         required this.email,
         required this.password,
-        required this.profilePic,
-        required this.posterPic,
         CancelToken? cancelToken})
       : super(cancelToken: cancelToken);
 }
