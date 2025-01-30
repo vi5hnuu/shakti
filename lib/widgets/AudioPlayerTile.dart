@@ -166,14 +166,19 @@ class AudioPlayerTileState extends State<AudioPlayerTile> {
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                   children: [StreamBuilder(stream:widget.player!.speedStream, builder: (context, snapshot) {
-                                    return Slider(
-                                      thumbColor: Colors.green,
-                                      activeColor: Colors.green,
-                                      divisions: 20,
-                                      min: 0.5,
-                                      max: 2,
-                                      value: widget.player!.speed,
-                                      onChanged: widget.player!.setSpeed,
+                                    return Column(
+                                      children: [
+                                        Text('Speed ${widget.player!.speed.toStringAsFixed(1)}'),
+                                        Slider(
+                                          thumbColor: Colors.green,
+                                          activeColor: Colors.green,
+                                          divisions: 20,
+                                          min: 0.5,
+                                          max: 2,
+                                          value: widget.player!.speed,
+                                          onChanged: widget.player!.setSpeed,
+                                        )
+                                      ],
                                     );
                                   },)]);
                             },);
