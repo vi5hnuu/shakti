@@ -99,12 +99,12 @@ class AuthApi {
   }
 
   Future<ApiResponse<void>> register({required Register register,CancelToken? cancelToken}) async {
-    var res = await DioSingleton().dio.post(_register,data:register,cancelToken:cancelToken);
+    var res = await DioSingleton().dio.post(_register,data:register.toJson(),cancelToken:cancelToken);
     return ApiResponse<void>(success: res.data['success'],message: res.data['message']);
   }
 
   Future<ApiResponse<void>> reVerify({required String email,CancelToken? cancelToken}) async {
-    var res = await DioSingleton().dio.get('$_reVerify?email=$email',data:register,cancelToken:cancelToken);
+    var res = await DioSingleton().dio.get('$_reVerify?email=$email',cancelToken:cancelToken);
     return ApiResponse<void>(success: res.data['success'],message: res.data['message']);
   }
 

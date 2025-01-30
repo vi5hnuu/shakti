@@ -6,6 +6,16 @@ class Register {
    final String password;
 
    const Register({required this.firstName,required this.lastName,required this.userName,required this.email,required this.password});
+
+  Map<String,String> toJson() {
+     return {
+        'firstName':firstName,
+        'lastName':lastName,
+        'userName':userName,
+        'email':email,
+        'password':password
+     };
+  }
 }
 
 

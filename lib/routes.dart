@@ -20,4 +20,5 @@ class AppRoutes{
   static AppRoute resetPasswordInit=AppRoute(name: 'forgot password init', path: 'forgot-password-init',fullPath: '/auth/forgot-password-init');
   static AppRoute resetPasswordComplete=AppRoute(name: 'forgot password complete', path: 'forgot-password-complete',fullPath: '/auth/forgot-password-complete');
   static AppRoute registerUser=AppRoute(name: 'register', path: 'register',fullPath: '/auth/register');
+  static AppRoute reverifyAccount=AppRoute(name: 're-verify account', path: 're-verify-account',fullPath: '/auth/re-verify-account');
 }

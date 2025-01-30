@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if(state.isExpired(forr: HttpStates.REGISTER)) return;
           authBlock.add(ExpireHttpState(forr: HttpStates.REGISTER));
           if (state.isSuccess(forr: HttpStates.REGISTER)) {
-            NotificationService.showSnackbar(text: state.httpStates[HttpStates.REGISTER]?.value ?? "registered successfully",color: Colors.green);
+            NotificationService.showSnackbar(text: state.message ?? state.httpStates[HttpStates.REGISTER]?.value ?? "Check your email to verify account",color: Colors.green);
             context.goNamed(AppRoutes.login.name);
           }else if(state.isError(forr: HttpStates.REGISTER)){
             NotificationService.showSnackbar(text:state.getError(forr: HttpStates.REGISTER)!,color: Colors.red);
@@ -155,14 +155,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         cancelToken: cancelToken));
                                   },
                             child: const Text('Register', style: TextStyle(color: Colors.white, fontSize: 18))),
-                        if (state.isError(forr: HttpStates.REGISTER))
-                          Text(
-                            state.getError(forr: HttpStates.REGISTER)!,
-                            textAlign: TextAlign.center,
-                          ),
                         const SizedBox(height: 12),
                         CustomTextButton(
-                          isLoading: state.isLoading(forr: HttpStates.REGISTER),
+                          isDisabled: state.isLoading(forr: HttpStates.REGISTER),
                             onPressed: () => GoRouter.of(context).goNamed(AppRoutes.login.name),
                             child: const Text('Sign-in instead')),
                       ],

@@ -97,6 +97,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(width: 12,),
                       Text("Sign In",style: TextStyle(color: Colors.white))
                     ],)),
+                    CustomElevatedButton(onPressed: ()=>router.pushNamed(AppRoutes.registerUser.name), child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.center
+                      ,children: [
+                      Icon(FontAwesomeIcons.arrowRightFromBracket,color: Colors.white,),
+                      const SizedBox(width: 12,),
+                      Text("Sign Up",style: TextStyle(color: Colors.white))
+                    ],)),
                     CustomElevatedButton(onPressed: () => router.pushNamed(AppRoutes.resetPasswordInit.name),
                         child:  Row(
                           mainAxisAlignment: MainAxisAlignment.center
@@ -104,6 +111,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           Icon(FontAwesomeIcons.key,color: Colors.white),
                           const SizedBox(width: 12,),
                           Text("Forgot Password",style: TextStyle(color: Colors.white),)
+                        ],)),
+                    CustomElevatedButton(onPressed: () => router.pushNamed(AppRoutes.reverifyAccount.name),
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.center
+                          ,children: [
+                          Icon(FontAwesomeIcons.check,color: Colors.white),
+                          const SizedBox(width: 12,),
+                          Text("Verify Account",style: TextStyle(color: Colors.white),)
                         ],))
                   ],
                 );

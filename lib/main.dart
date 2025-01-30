@@ -6,6 +6,7 @@ import 'package:shakti/pages/auth/LoginScreen.dart';
 import 'package:shakti/pages/SettingsScreen.dart';
 import 'package:shakti/pages/ShaktiReelsScreen.dart';
 import 'package:shakti/pages/SplashScreen.dart';
+import 'package:shakti/pages/auth/ReVerifyScreen.dart';
 import 'package:shakti/pages/auth/RegisterScreen.dart';
 import 'package:shakti/pages/auth/ResetPasswordCompleteScreen.dart';
 import 'package:shakti/pages/auth/ResetPasswordInitScreen.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     AppRoutes.resetPasswordInit.fullPath,
     AppRoutes.resetPasswordComplete.fullPath,
     AppRoutes.registerUser.fullPath,
+    AppRoutes.reverifyAccount.fullPath,
   ];
 
   StreamSubscription<GlobalEvent>? globalEventSubscription;
@@ -134,6 +136,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               pageBuilder: (context, state) => CustomTransitionPage<void>(
                 key: state.pageKey,
                 child: const RegisterScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+              ),
+            ),
+            GoRoute(
+              name: AppRoutes.reverifyAccount.name,
+              path: AppRoutes.reverifyAccount.path,
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const ReVerifyScreen(),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
               ),
             )
