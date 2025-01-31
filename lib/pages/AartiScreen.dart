@@ -193,10 +193,10 @@ class _AartiScreenState extends State<AartiScreen> with WidgetsBindingObserver{
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     volumeController.removeListener();
-
     cancelToken.cancel("cancelling vrat katha page info fetch");
     _scrollController.removeListener(_loadNextPage);
     _scrollController.dispose();
+    player.dispose();
     super.dispose();
   }
 
