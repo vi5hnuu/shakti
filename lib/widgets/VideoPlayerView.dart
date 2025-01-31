@@ -6,7 +6,7 @@ import 'package:volume_controller/volume_controller.dart';
 
 import '../models/Reel.dart';
 
-class VideoPlayerView extends StatefulWidget {
+class VideoPlayerView extends StatefulWidget{
   final Reel reel;
 
   const VideoPlayerView({
@@ -18,17 +18,32 @@ class VideoPlayerView extends StatefulWidget {
   State<VideoPlayerView> createState() => _VideoPlayerViewState();
 }
 
-class _VideoPlayerViewState extends State<VideoPlayerView> {
+class _VideoPlayerViewState extends State<VideoPlayerView> with WidgetsBindingObserver {
   NativeVideoPlayerController? _controller;
   late final md=MediaQuery.of(context);
   bool isAutoplayEnabled = true;
   bool isPlaybackLoopEnabled = true;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
   void didUpdateWidget(VideoPlayerView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.reel != widget.reel) {
       _loadVideoSource();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _controller?.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      _controller?.play();
     }
   }
 
@@ -56,13 +71,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
   }
 
   @override
-  void dispose() {
+  void dispose() async{
     _controller?.onPlaybackStatusChanged.removeListener(_onPlaybackStatusChanged);
     _controller?.onPlaybackPositionChanged.removeListener(_onPlaybackPositionChanged);
     _controller?.onPlaybackSpeedChanged.removeListener(_onPlaybackSpeedChanged);
     _controller?.onVolumeChanged.removeListener(_onPlaybackVolumeChanged);
     _controller?.onPlaybackReady.removeListener(_onPlaybackReady);
     _controller?.onPlaybackEnded.removeListener(_onPlaybackEnded);
+    await _controller?.stop();
     _controller = null;
     super.dispose();
   }
