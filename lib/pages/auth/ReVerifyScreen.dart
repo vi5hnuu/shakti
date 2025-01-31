@@ -30,6 +30,7 @@ class _ReVerifyScreenState extends State<ReVerifyScreen> {
     return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) => previous != current,
       listener: (ctx, state) {
+        if(!mounted) return;
         if(state.isExpired(forr: HttpStates.REVERIFY)) return;
         authBloc.add(ExpireHttpState(forr: HttpStates.REVERIFY));
         if (state.isSuccess(forr: HttpStates.REVERIFY)) {
