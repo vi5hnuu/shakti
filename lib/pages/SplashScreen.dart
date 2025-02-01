@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     authBloc.add(TryAuthenticatingEvent());
-    timer=Timer(const Duration(seconds: 5),(){
+    timer=Timer(const Duration(seconds: 10),(){
       if(!mounted) return;
       if(authBloc.state.isSuccess(forr: HttpStates.TRY_AUTH)) router.goNamed(AppRoutes.home.name);
       else if(authBloc.state.isError(forr: HttpStates.TRY_AUTH)) router.goNamed(AppRoutes.login.name);

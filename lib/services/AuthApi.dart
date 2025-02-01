@@ -53,6 +53,7 @@ class AuthApi {
   }
 
   Future<ApiResponse<User>> getMeInfo({CancelToken? cancelToken}) async {
+    await Future.delayed(Duration(seconds: 5));
     var res = await DioSingleton().dio.get(_getMeInfo,cancelToken:cancelToken);
     return ApiResponse<User>(success: res.data['success'],data: User.fromJson(res.data['data']),message: res.data['message']);
   }
